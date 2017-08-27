@@ -5,7 +5,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<link href="<spring:url value="css/app.css" />" rel="stylesheet"
+<link href="<spring:url value="css/app.css" context="spring-mvc-security-webcam"/>" rel="stylesheet"
 	type="text/css">
 <title>Welcome</title>
 </head>

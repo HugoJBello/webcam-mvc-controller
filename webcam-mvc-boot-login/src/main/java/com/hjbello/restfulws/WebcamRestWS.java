@@ -25,6 +25,7 @@ public class WebcamRestWS {
  
 	public CapturedMovement invokeWecamRestWS ( RequestCapture requestCapture) throws JsonProcessingException{
 		//First we prepare the authentification
+		System.out.println("Invoking restful web service " + url);
 		String urlCapture = url + "/capture/";
 		DefaultHttpClient httpClient = new DefaultHttpClient();
 		BasicCredentialsProvider credentialsProvider =  new BasicCredentialsProvider();
@@ -47,6 +48,7 @@ public class WebcamRestWS {
 	
 	public SystemInfo obtainWebcamInfoRestWS () throws JsonProcessingException{
 		//First we prepare the authentification
+		System.out.println("Invoking restful web service " + url);
 		String urlInfo = url + "/camInfo/";
 		DefaultHttpClient httpClient = new DefaultHttpClient();
 		BasicCredentialsProvider credentialsProvider =  new BasicCredentialsProvider();

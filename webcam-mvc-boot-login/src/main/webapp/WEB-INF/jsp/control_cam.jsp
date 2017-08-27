@@ -63,6 +63,7 @@ jQuery(document).ready(function($) {
 	$("#invokeCam").submit(function(event) {
 		// Prevent the form from submitting via the browser.
 		event.preventDefault();
+		alert($("#seconds").val());
 		invokeCamAjax();
 
 	});
@@ -70,15 +71,18 @@ jQuery(document).ready(function($) {
 
 function invokeCamAjax() {
 	
-	var token = $('#csrfToken').val();
-	var header = $('#csrfHeader').val();	
+	//var token = $('#csrfToken').val();
+	//var header = $('#csrfHeader').val();	
 	var data = {}
 	data["seconds"] = parseInt($("#seconds").val());
-
+	
+	var token = $("input[name='_csrf']").val();
+    var header = "X-CSRF-TOKEN";
+	
 	$.ajax({
 		type : "POST",
 		contentType : "application/json",
-		url : "${home}/invokeRestful/",
+		url : "/invokeRestful",
 		data : JSON.stringify(data),
 		dataType : 'json',
 		beforeSend: function(xhr) {
@@ -103,6 +107,7 @@ function invokeCamAjax() {
 }
 
 function display (data){
+	alert(data);
  	var base64_string = data.imagesBase64[0];
     var $img = $("<img/>");
     $img.attr("src", "data:image/png;base64," + base64_string);

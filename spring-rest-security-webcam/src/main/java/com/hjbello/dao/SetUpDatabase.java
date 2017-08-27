@@ -20,14 +20,14 @@ public class SetUpDatabase{
 	
 	public void createTables (){
 		String sqlCreateTableAppActivityLog = "CREATE TABLE IF NOT EXISTS app_activity_log (\n"+
-				"log_id  INTEGER PRIMARY KEY AUTOINCREMENT,\n"+
+				"log_id  INTEGER PRIMARY KEY AUTO_INCREMENT,\n"+
 				"username VARCHAR(45) not null,\n"+
 				"user_ip VARCHAR(45),\n"+
 				"photos_sent VARCHAR(100),\n"+
 				"date_accessed DATETIME);";
 
 		String sqlCreateTableImages = "CREATE TABLE IF NOT EXISTS images (\n"+
-				"image_id  INTEGER PRIMARY KEY AUTOINCREMENT,\n"+
+				"image_id  INTEGER PRIMARY KEY AUTO_INCREMENT,\n"+
 				"filename VARCHAR(100),\n"+
 				"date_recorded DATETIME,\n"+
 				"username VARCHAR(45) not null,\n"+
@@ -49,14 +49,16 @@ public class SetUpDatabase{
 	}
 	
 	public Connection connect() {
-		// SQLite connection string
-		String dbFile = System.getProperty("user.home") + "/sqlite_databases/webcam_controller_database.db";
-		String url = "jdbc:sqlite:"+dbFile;
+		// H2 connection string
+		String url = "jdbc:h2:file:~/h2/app_db";
+		String user = "sa";
+		String password = "";
+		
 		createDBFolder();
 
 		Connection conn = null;
 		try {
-			conn = DriverManager.getConnection(url);
+			conn = DriverManager.getConnection(url, user,password);
 			logger.info("Connected to database");
 
 		} catch (SQLException e) {
@@ -66,7 +68,7 @@ public class SetUpDatabase{
 	}
 	
 	public void createDBFolder(){
-		String path = System.getProperty("user.home")	+ "/sqlite_databases/";
+		String path = System.getProperty("user.home")	+ "/h2/";
 		File directory = new File(path);
 		if(!directory.exists()){
 			directory.mkdir();

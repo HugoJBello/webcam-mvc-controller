@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-Implementation-Title: hjbello
+Implementation-Title: webcam-mvc-boot-login
 Implementation-Version: 0.1.0
 Built-By: hugo
 Implementation-Vendor-Id: webcam-control

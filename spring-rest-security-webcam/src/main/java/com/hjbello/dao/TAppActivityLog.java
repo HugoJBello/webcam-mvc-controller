@@ -2,10 +2,26 @@ package com.hjbello.dao;
 
 import java.util.Date;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+@Entity
+@Table(name = "app_activity_log")
 public class TAppActivityLog {
-	private String username;
+	@Id
+	@Column(name="username")
+ 	private String username;
+	
+	@Column(name="user_ip")
 	private String userIp;
+	
+	@Column(name="photos_sent")
 	private String photosSent;
+	
+	@Column(name="date_accessed")
 	private Date dateAccessed;
 	
 	public TAppActivityLog(String username, String userIp, String photosSent, Date dateAccessed) {

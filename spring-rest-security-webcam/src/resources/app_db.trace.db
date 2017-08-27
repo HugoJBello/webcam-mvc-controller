@@ -1,0 +1,9 @@
+2017-08-27 18:10:20 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLException: Syntax error in SQL statement "APP_ACTIVITY_LOG[*]"; expected "ALTER, ANALYZE, {"; SQL statement:
+APP_ACTIVITY_LOG [42001-194]
+2017-08-27 18:10:39 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLException: Syntax error in SQL statement "SELECT * FORM[*] APP_ACTIVITY_LOG "; SQL statement:
+select * form app_activity_log [42000-194]
+2017-08-27 18:10:48 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLException: Syntax error in SQL statement "SELECT * FORM[*] APP_ACTIVITY_LOG "; SQL statement:
+select * form app_activity_log [42000-194]

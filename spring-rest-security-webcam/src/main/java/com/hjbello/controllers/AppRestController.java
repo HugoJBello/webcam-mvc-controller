@@ -7,6 +7,8 @@ import java.util.Date;
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
@@ -41,6 +43,9 @@ public class AppRestController {
 	@Autowired
 	ImagesDAOImpl imagesDAO;
 	
+	private static final Logger logger = LoggerFactory.getLogger(AppRestController.class);
+
+	
     @PostConstruct
     public void init() { 
     	setUpDatabase.createTables();
@@ -63,9 +68,7 @@ public class AppRestController {
     	String userIp = httpRequest.getRemoteAddr();
     	
     	// We record
-    	int seconds = request.getSeconds();
-    	Date date = new Date();
-    	MotionDetector detector = new MotionDetector("" + seconds);
+    	MotionDetector detector = new MotionDetector("" + request.getSeconds(), imagesDAO, username, userIp);
     	try {
 			detector.record();
 		} catch (IOException e) {
@@ -78,22 +81,13 @@ public class AppRestController {
     	CapturedMovement response = new CapturedMovement();
     	response.setImagesPath(imagesPath);
     	response.setImagesBase64(imagesBase64);
-    	response.setDateOfCapture(date);
+    	response.setDateOfCapture( new Date());
     	
     	// we record this request in the database
-//    	ActivityTracker activityTracker = new ActivityTracker(recordActivityDao, imagesDAO);
-//     	activityTracker.updateActivity(imagesPath, username, userIp);
- 		TAppActivityLog tAppActivityLog = new TAppActivityLog();
-    	tAppActivityLog.setDateAccessed(new Date());
-    	tAppActivityLog.setPhotosSent(imagesPath.toString());  	  	
-    	tAppActivityLog.setUsername(username);
-    	tAppActivityLog.setUserIp(userIp); 	
-      	recordActivityDao.save(tAppActivityLog);  	
-      	for (int index=0; index < imagesPath.size(); index++){
-      		TImages tImages = new TImages(imagesPath.get(index), date, username, userIp);
-      		imagesDAO.save(tImages);
-      	}
-
+    	ActivityTracker activityTracker = new ActivityTracker(recordActivityDao);
+     	activityTracker.updateActivity(imagesPath, username, userIp);
+     	
+     	logger.info("Request sent");
         return new ResponseEntity<CapturedMovement>(response, HttpStatus.OK);
     }
     

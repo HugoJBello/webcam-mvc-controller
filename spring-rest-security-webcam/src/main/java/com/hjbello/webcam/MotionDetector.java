@@ -18,42 +18,44 @@ import javax.imageio.ImageIO;
 import org.apache.commons.codec.binary.Base64OutputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import com.github.sarxos.webcam.Webcam;
 import com.github.sarxos.webcam.WebcamMotionDetector;
 import com.hjbello.dao.ImagesDAO;
-import com.hjbello.dao.ImagesDAOImpl;
+import com.hjbello.dao.RecordActivityDAO;
 import com.hjbello.dao.RecordActivityDAOImpl;
-import com.hjbello.dao.TAppActivityLog;
 import com.hjbello.dao.TImages;
 
 
 public class MotionDetector {
+
 	final static Logger logger = LoggerFactory.getLogger(RecordActivityDAOImpl.class);
 	private static final int INTERVAL = 100; // ms
 
-	@Autowired
-	ImagesDAOImpl imagesDao;
-	
-	@Autowired 
-	RecordActivityDAOImpl recordActivityDao;
-	
+	private ImagesDAO imagesDao;
+	private RecordActivityDAO recordActivityDao;
+	private String username;
+	private String userIp;
+
 	private String stopInSeconds;
 	private String destinyDirectory = System.getProperty("user.home") + "/captured_photos";
 	private String todaysDirectory;
 	private ArrayList<String> listOfObtaiedImages = new ArrayList<String>();
 	private ArrayList<String> listOfObtainedImageBase64 = new ArrayList<String>();
 
-	public MotionDetector(String stopInSeconds) {
+	public MotionDetector(String stopInSeconds, ImagesDAO imagesDao, String username, String userIp) {
 		super();
+		this.imagesDao = imagesDao;
+		this.username = username;
+		this.userIp = userIp;
 		this.stopInSeconds = stopInSeconds;
 	}
 
-	public void record() throws IOException {
 
+
+	public void record() throws IOException {
 		Webcam webcam = Webcam.getDefault();
-		
+
 		obtainDirNames();
 
 		createTodaysSubdirectory();
@@ -66,7 +68,7 @@ public class MotionDetector {
 		long endTime = startTime + Integer.parseInt(stopInSeconds)* 1000;
 		while (System.currentTimeMillis() < endTime) {
 			if (detector.isMotion()) {
-				recordAndSaveImage(webcam);
+				shootAndSave(webcam);
 			}
 			try {
 				Thread.sleep(INTERVAL * 2);
@@ -78,17 +80,17 @@ public class MotionDetector {
 		webcam.getLock().disable();
 	}
 
-	private void recordAndSaveImage(Webcam webcam) throws IOException {
+	private void shootAndSave(Webcam webcam) throws IOException {
 		BufferedImage image = webcam.getImage();
 
 		DateFormat dateFormat_with_hour = new SimpleDateFormat("yyyyMMdd-HH_mm_ss:SSS");
 		Date date = new Date();
-		
+
 		String filename = dateFormat_with_hour.format(date).replace(":", "_") + ".png";;
 		String filePath = todaysDirectory + "/" + filename;
 
 		listOfObtaiedImages.add(filePath);
-		
+
 		listOfObtainedImageBase64.add(convertToBase64(image));
 		logger.info("Photo taken and saved in " + filePath);
 
@@ -97,15 +99,18 @@ public class MotionDetector {
 					new FileOutputStream(new File(filePath)));
 			ImageIO.write(image, "PNG", imageOutputStream);
 			imageOutputStream.close();
+
+			TImages tImages = new TImages(filePath, date, username, userIp);
+			imagesDao.save(tImages);
+
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
-	
-	
+
+
 
 	private void createTodaysSubdirectory() {
-		
 		// our directory for today will be inside a destiny directory
 		createDestinyDirectory();
 
@@ -196,6 +201,38 @@ public class MotionDetector {
 
 	public void setListOfObtainedImageBase64(ArrayList<String> listOfObtainedImageBase64) {
 		this.listOfObtainedImageBase64 = listOfObtainedImageBase64;
+	}
+
+	public ImagesDAO getImagesDao() {
+		return imagesDao;
+	}
+
+	public void setImagesDao(ImagesDAO imagesDao) {
+		this.imagesDao = imagesDao;
+	}
+
+	public RecordActivityDAO getRecordActivityDao() {
+		return recordActivityDao;
+	}
+
+	public void setRecordActivityDao(RecordActivityDAO recordActivityDao) {
+		this.recordActivityDao = recordActivityDao;
+	}
+
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	public String getUserIp() {
+		return userIp;
+	}
+
+	public void setUserIp(String userIp) {
+		this.userIp = userIp;
 	}
 
 }

@@ -10,9 +10,7 @@ import org.springframework.stereotype.Component;
 public class ActivityTracker {
 
  	public RecordActivityDAOImpl recordActivityDao;
-	
- 	public ImagesDAOImpl imagesDAO;
-	
+		
  	public void updateActivity(ArrayList<String> imagesPath, String username, String userIp){
  		Date date = new Date();
  		TAppActivityLog tAppActivityLog = new TAppActivityLog();
@@ -21,17 +19,11 @@ public class ActivityTracker {
     	tAppActivityLog.setUsername(username);
     	tAppActivityLog.setUserIp(userIp); 	
       	recordActivityDao.save(tAppActivityLog);
-      	
-      	for (int index=0; index < imagesPath.size(); index++){
-      		TImages tImages = new TImages(imagesPath.get(index), date, username, userIp);
-      		imagesDAO.save(tImages);
-      	}
  	}
 
-	public ActivityTracker(RecordActivityDAOImpl recordActivityDao, ImagesDAOImpl imagesDAO) {
+	public ActivityTracker(RecordActivityDAOImpl recordActivityDao) {
 		super();
 		this.recordActivityDao = recordActivityDao;
-		this.imagesDAO = imagesDAO;
 	}
 
 }

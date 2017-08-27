@@ -63,8 +63,7 @@ jQuery(document).ready(function($) {
 	$("#invokeCam").submit(function(event) {
 		// Prevent the form from submitting via the browser.
 		event.preventDefault();
-		alert($("#seconds").val());
-		invokeCamAjax();
+ 		invokeCamAjax();
 
 	});
 });
@@ -107,8 +106,7 @@ function invokeCamAjax() {
 }
 
 function display (data){
-	alert(data);
- 	var base64_string = data.imagesBase64[0];
+  	var base64_string = data.imagesBase64[0];
     var $img = $("<img/>");
     $img.attr("src", "data:image/png;base64," + base64_string);
     $("#img_preview").append($img);	
